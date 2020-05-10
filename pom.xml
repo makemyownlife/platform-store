@@ -12,7 +12,6 @@
     <modules>
         <module>platform-store-core</module>
         <module>platform-store-delay</module>
-        <module>platform-store-raft</module>
     </modules>
 
     <properties>
