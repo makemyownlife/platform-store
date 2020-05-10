@@ -15,6 +15,9 @@ public class MessageStoreConfig {
     @ImportantField
     private String storePathCommitLog = System.getProperty("user.home") + File.separator + "store" + File.separator + "commitlog";
 
+    @ImportantField
+    private BrokerRole brokerRole = BrokerRole.ASYNC_MASTER;
+
     // CommitLog file size,default is 1G
     private int mappedFileSizeCommitLog = 1024 * 1024 * 1024;
 
@@ -725,4 +728,13 @@ public class MessageStoreConfig {
     public void setEnableDLegerCommitLog(boolean enableDLegerCommitLog) {
         this.enableDLegerCommitLog = enableDLegerCommitLog;
     }
+
+    public BrokerRole getBrokerRole() {
+        return brokerRole;
+    }
+
+    public void setBrokerRole(BrokerRole brokerRole) {
+        this.brokerRole = brokerRole;
+    }
+
 }
