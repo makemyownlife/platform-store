@@ -1,6 +1,6 @@
 package com.courage.platform.store.core.config;
 
-import com.courage.platform.store.core.annotation.ImportantField;
+import com.courage.platform.store.core.domain.annotation.ImportantField;
 import com.courage.platform.store.core.domain.constant.ConsumerQueueConstants;
 
 import java.io.File;

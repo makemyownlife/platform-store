@@ -1,4 +1,4 @@
-package com.courage.platform.store.core.annotation;
+package com.courage.platform.store.core.domain.annotation;
 
 import java.lang.annotation.*;
 
