@@ -1,7 +1,7 @@
 package com.courage.platform.store.core.config;
 
-import com.courage.platform.store.core.ConsumeQueue;
 import com.courage.platform.store.core.annotation.ImportantField;
+import com.courage.platform.store.core.domain.constant.ConsumerQueueConstants;
 
 import java.io.File;
 
@@ -22,7 +22,7 @@ public class MessageStoreConfig {
     private int mappedFileSizeCommitLog = 1024 * 1024 * 1024;
 
     // ConsumeQueue file size,default is 30W
-    private int mappedFileSizeConsumeQueue = 300000 * ConsumeQueue.CQ_STORE_UNIT_SIZE;
+    private int mappedFileSizeConsumeQueue = 300000 * ConsumerQueueConstants.CQ_STORE_UNIT_SIZE;
 
     // enable consume queue ext
     private boolean enableConsumeQueueExt = false;
@@ -239,8 +239,8 @@ public class MessageStoreConfig {
     }
 
     public int getMappedFileSizeConsumeQueue() {
-        int factor = (int) Math.ceil(this.mappedFileSizeConsumeQueue / (ConsumeQueue.CQ_STORE_UNIT_SIZE * 1.0));
-        return (int) (factor * ConsumeQueue.CQ_STORE_UNIT_SIZE);
+        int factor = (int) Math.ceil(this.mappedFileSizeConsumeQueue / (ConsumerQueueConstants.CQ_STORE_UNIT_SIZE * 1.0));
+        return (int) (factor * ConsumerQueueConstants.CQ_STORE_UNIT_SIZE);
     }
 
     public void setMappedFileSizeConsumeQueue(int mappedFileSizeConsumeQueue) {
