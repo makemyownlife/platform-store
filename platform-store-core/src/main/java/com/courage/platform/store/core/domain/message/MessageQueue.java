@@ -1,4 +1,4 @@
-package com.courage.platform.store.core.message;
+package com.courage.platform.store.core.domain.message;
 
 import java.io.Serializable;
 
