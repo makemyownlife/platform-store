@@ -11,28 +11,11 @@ public class MessageStoreConfig {
     @ImportantField
     private String storePathRootDir = System.getProperty("user.home") + File.separator + "store";
 
-    //The directory in which the commitlog is kept
-    @ImportantField
-    private String storePathCommitLog = System.getProperty("user.home") + File.separator + "store" + File.separator + "commitlog";
-
-    @ImportantField
-    private BrokerRole brokerRole = BrokerRole.ASYNC_MASTER;
-
     // CommitLog file size,default is 1G
     private int mappedFileSizeCommitLog = 1024 * 1024 * 1024;
 
     // ConsumeQueue file size,default is 30W
     private int mappedFileSizeConsumeQueue = 300000 * ConsumerQueueConstants.CQ_STORE_UNIT_SIZE;
-
-    // enable consume queue ext
-    private boolean enableConsumeQueueExt = false;
-
-    // ConsumeQueue extend file size, 48M
-    private int mappedFileSizeConsumeQueueExt = 48 * 1024 * 1024;
-
-    // Bit count of filter bit map.
-    // this will be set by pipe of calculate filter bit map.
-    private int bitMapLengthConsumeQueueExt = 64;
 
     // CommitLog flush interval
     // flush data to disk
@@ -247,30 +230,6 @@ public class MessageStoreConfig {
         this.mappedFileSizeConsumeQueue = mappedFileSizeConsumeQueue;
     }
 
-    public boolean isEnableConsumeQueueExt() {
-        return enableConsumeQueueExt;
-    }
-
-    public void setEnableConsumeQueueExt(boolean enableConsumeQueueExt) {
-        this.enableConsumeQueueExt = enableConsumeQueueExt;
-    }
-
-    public int getMappedFileSizeConsumeQueueExt() {
-        return mappedFileSizeConsumeQueueExt;
-    }
-
-    public void setMappedFileSizeConsumeQueueExt(int mappedFileSizeConsumeQueueExt) {
-        this.mappedFileSizeConsumeQueueExt = mappedFileSizeConsumeQueueExt;
-    }
-
-    public int getBitMapLengthConsumeQueueExt() {
-        return bitMapLengthConsumeQueueExt;
-    }
-
-    public void setBitMapLengthConsumeQueueExt(int bitMapLengthConsumeQueueExt) {
-        this.bitMapLengthConsumeQueueExt = bitMapLengthConsumeQueueExt;
-    }
-
     public int getFlushIntervalCommitLog() {
         return flushIntervalCommitLog;
     }
@@ -321,14 +280,6 @@ public class MessageStoreConfig {
 
     public void setCheckCRCOnRecover(boolean checkCRCOnRecover) {
         this.checkCRCOnRecover = checkCRCOnRecover;
-    }
-
-    public String getStorePathCommitLog() {
-        return storePathCommitLog;
-    }
-
-    public void setStorePathCommitLog(String storePathCommitLog) {
-        this.storePathCommitLog = storePathCommitLog;
     }
 
     public String getDeleteWhen() {
@@ -727,14 +678,6 @@ public class MessageStoreConfig {
 
     public void setEnableDLegerCommitLog(boolean enableDLegerCommitLog) {
         this.enableDLegerCommitLog = enableDLegerCommitLog;
-    }
-
-    public BrokerRole getBrokerRole() {
-        return brokerRole;
-    }
-
-    public void setBrokerRole(BrokerRole brokerRole) {
-        this.brokerRole = brokerRole;
     }
 
 }
