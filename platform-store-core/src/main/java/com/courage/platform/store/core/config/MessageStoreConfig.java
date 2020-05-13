@@ -23,9 +23,6 @@ public class MessageStoreConfig {
     @ImportantField
     private int commitIntervalCommitLog = 200;
 
-    // ConsumeQueue removal interval
-    private int deleteConsumeQueueFilesInterval = 100;
-
     @ImportantField
     private int fileReservedTime = 72;
 
@@ -76,14 +73,6 @@ public class MessageStoreConfig {
         this.commitIntervalCommitLog = commitIntervalCommitLog;
     }
 
-    public int getDeleteConsumeQueueFilesInterval() {
-        return deleteConsumeQueueFilesInterval;
-    }
-
-    public void setDeleteConsumeQueueFilesInterval(int deleteConsumeQueueFilesInterval) {
-        this.deleteConsumeQueueFilesInterval = deleteConsumeQueueFilesInterval;
-    }
-
     public int getFileReservedTime() {
         return fileReservedTime;
     }
@@ -131,6 +120,5 @@ public class MessageStoreConfig {
     public void setFastFailIfNoBufferInStorePool(boolean fastFailIfNoBufferInStorePool) {
         this.fastFailIfNoBufferInStorePool = fastFailIfNoBufferInStorePool;
     }
-
 
 }
