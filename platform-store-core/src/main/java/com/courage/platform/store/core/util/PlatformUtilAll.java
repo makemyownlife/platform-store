@@ -1,6 +1,7 @@
 package com.courage.platform.store.core.util;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.validator.routines.InetAddressValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,14 +11,14 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.zip.CRC32;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
@@ -30,6 +31,59 @@ public class PlatformUtilAll {
     public static final String YYYY_MM_DD_HH_MM_SS_SSS = "yyyy-MM-dd#HH:mm:ss:SSS";
     public static final String YYYYMMDDHHMMSS = "yyyyMMddHHmmss";
     final static char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+
+    public static byte[] getIP() {
+        try {
+            Enumeration allNetInterfaces = NetworkInterface.getNetworkInterfaces();
+            InetAddress ip = null;
+            byte[] internalIP = null;
+            while (allNetInterfaces.hasMoreElements()) {
+                NetworkInterface netInterface = (NetworkInterface) allNetInterfaces.nextElement();
+                Enumeration addresses = netInterface.getInetAddresses();
+                while (addresses.hasMoreElements()) {
+                    ip = (InetAddress) addresses.nextElement();
+                    if (ip != null && ip instanceof Inet4Address) {
+                        byte[] ipByte = ip.getAddress();
+                        if (ipByte.length == 4) {
+                            if (ipCheck(ipByte)) {
+                                if (!isInternalIP(ipByte)) {
+                                    return ipByte;
+                                } else if (internalIP == null) {
+                                    internalIP = ipByte;
+                                }
+                            }
+                        }
+                    } else if (ip != null && ip instanceof Inet6Address) {
+                        byte[] ipByte = ip.getAddress();
+                        if (ipByte.length == 16) {
+                            if (ipV6Check(ipByte)) {
+                                if (!isInternalV6IP(ip)) {
+                                    return ipByte;
+                                } else if (internalIP == null) {
+                                    internalIP = ipByte;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (internalIP != null) {
+                return internalIP;
+            } else {
+                throw new RuntimeException("Can not get local ip");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Can not get local ip", e);
+        }
+    }
+
+    private static boolean ipV6Check(byte[] ip) {
+        if (ip.length != 16) {
+            throw new RuntimeException("illegal ipv6 bytes");
+        }
+        InetAddressValidator validator = InetAddressValidator.getInstance();
+        return validator.isValidInet6Address(ipToIPv6Str(ip));
+    }
 
     public static int getPid() {
         RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
@@ -479,4 +533,5 @@ public class PlatformUtilAll {
         String[] addrArray = str.split(splitor);
         return Arrays.asList(addrArray);
     }
+    
 }
