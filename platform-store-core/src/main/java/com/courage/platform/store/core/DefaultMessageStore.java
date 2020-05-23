@@ -1,6 +1,7 @@
 package com.courage.platform.store.core;
 
 import com.courage.platform.store.core.config.MessageStoreConfig;
+import com.courage.platform.store.core.domain.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +39,11 @@ public class DefaultMessageStore implements MessageStore {
     @Override
     public void destroy() {
 
+    }
+
+    @Override
+    public PutMessageResult putMessage(Message message) {
+        return null;
     }
 
     //============================================================== get set method start ===========================================================
