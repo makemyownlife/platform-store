@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.channels.FileLock;
 
 /**
  * 默认消息存储
@@ -26,6 +27,8 @@ public class DefaultMessageStore implements MessageStore {
 
     private RandomAccessFile lockFile;
 
+    private FileLock lock;
+
     public DefaultMessageStore(final MessageStoreConfig messageStoreConfig) throws IOException {
         this.messageStoreConfig = messageStoreConfig;
 
@@ -36,11 +39,13 @@ public class DefaultMessageStore implements MessageStore {
         lockFile = new RandomAccessFile(file, "rw");
     }
 
+    //先调用load方法
     @Override
     public boolean load() {
         return false;
     }
 
+    //然后调用start方法
     @Override
     public void start() throws Exception {
 
@@ -48,7 +53,14 @@ public class DefaultMessageStore implements MessageStore {
 
     @Override
     public void shutdown() {
-
+        this.transientStorePool.destroy();
+        if (lockFile != null && lock != null) {
+            try {
+                lock.release();
+                lockFile.close();
+            } catch (IOException e) {
+            }
+        }
     }
 
     @Override
