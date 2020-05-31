@@ -13,6 +13,9 @@ public class MessageStoreConfig {
     // CommitLog file size,default is 1G
     private int mappedFileSizeCommitLog = 1024 * 1024 * 1024;
 
+    @ImportantField
+    private FlushDiskType flushDiskType = FlushDiskType.ASYNC_FLUSH;
+
     // CommitLog flush interval
     // flush data to disk
     @ImportantField
@@ -34,12 +37,17 @@ public class MessageStoreConfig {
     // This check adds some overhead,so it may be disabled in cases seeking extreme performance.
     private boolean checkCRCOnRecover = true;
 
+    private boolean warmMapedFileEnable = false;
+
     @ImportantField
     private boolean transientStorePoolEnable = false;
 
     private int transientStorePoolSize = 5;
 
     private boolean fastFailIfNoBufferInStorePool = false;
+
+    // Flush page size when the disk in warming state
+    private int flushLeastPagesWhenWarmMapedFile = 1024 / 4 * 16;
 
     public String getStorePathRootDir() {
         return storePathRootDir;
@@ -121,4 +129,32 @@ public class MessageStoreConfig {
         this.fastFailIfNoBufferInStorePool = fastFailIfNoBufferInStorePool;
     }
 
+    public FlushDiskType getFlushDiskType() {
+        return flushDiskType;
+    }
+
+    public void setFlushDiskType(FlushDiskType flushDiskType) {
+        this.flushDiskType = flushDiskType;
+    }
+
+    public void setFlushDiskType(String type) {
+        this.flushDiskType = FlushDiskType.valueOf(type);
+    }
+
+    public boolean isWarmMapedFileEnable() {
+        return warmMapedFileEnable;
+    }
+
+    public void setWarmMapedFileEnable(boolean warmMapedFileEnable) {
+        this.warmMapedFileEnable = warmMapedFileEnable;
+    }
+
+    public int getFlushLeastPagesWhenWarmMapedFile() {
+        return flushLeastPagesWhenWarmMapedFile;
+    }
+
+    public void setFlushLeastPagesWhenWarmMapedFile(int flushLeastPagesWhenWarmMapedFile) {
+        this.flushLeastPagesWhenWarmMapedFile = flushLeastPagesWhenWarmMapedFile;
+    }
+    
 }
