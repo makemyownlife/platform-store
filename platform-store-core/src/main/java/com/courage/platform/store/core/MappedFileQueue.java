@@ -1,5 +1,6 @@
 package com.courage.platform.store.core;
 
+import com.courage.platform.store.core.util.PlatformUtilAll;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,9 +27,12 @@ public class MappedFileQueue {
 
     private volatile long storeTimestamp = 0;
 
-    public MappedFileQueue(final String storePath, int mappedFileSize) {
+    private AllocateMappedFileService allocateMappedFileService;
+
+    public MappedFileQueue(final String storePath, int mappedFileSize, AllocateMappedFileService allocateMappedFileService) {
         this.storePath = storePath;
         this.mappedFileSize = mappedFileSize;
+        this.allocateMappedFileService = allocateMappedFileService;
     }
 
     public boolean load() {
@@ -56,6 +60,69 @@ public class MappedFileQueue {
             }
         }
         return true;
+    }
+
+    public MappedFile getLastMappedFile(final long startOffset, boolean needCreate) {
+        long createOffset = -1;
+        MappedFile mappedFileLast = getLastMappedFile();
+
+        if (mappedFileLast == null) {
+            createOffset = startOffset - (startOffset % this.mappedFileSize);
+        }
+
+        if (mappedFileLast != null && mappedFileLast.isFull()) {
+            createOffset = mappedFileLast.getFileFromOffset() + this.mappedFileSize;
+        }
+
+        if (createOffset != -1 && needCreate) {
+            String nextFilePath = this.storePath + File.separator + PlatformUtilAll.offset2FileName(createOffset);
+            String nextNextFilePath = this.storePath + File.separator + PlatformUtilAll.offset2FileName(createOffset + this.mappedFileSize);
+            MappedFile mappedFile = null;
+            if (this.allocateMappedFileService != null) {
+                mappedFile = this.allocateMappedFileService.putRequestAndReturnMappedFile(nextFilePath, nextNextFilePath, this.mappedFileSize);
+            }
+            //直接创建mappedFile
+            else {
+                try {
+                    mappedFile = new MappedFile(nextFilePath, this.mappedFileSize);
+                } catch (IOException e) {
+                    logger.error("create mappedFile exception", e);
+                }
+            }
+
+            if (mappedFile != null) {
+                if (this.mappedFiles.isEmpty()) {
+                    mappedFile.setFirstCreateInQueue(true);
+                }
+                this.mappedFiles.add(mappedFile);
+            }
+
+            return mappedFile;
+        }
+
+        return mappedFileLast;
+    }
+
+    public MappedFile getLastMappedFile(final long startOffset) {
+        return getLastMappedFile(startOffset, true);
+    }
+
+    public MappedFile getLastMappedFile() {
+        MappedFile mappedFileLast = null;
+
+        while (!this.mappedFiles.isEmpty()) {
+            try {
+                mappedFileLast = this.mappedFiles.get(this.mappedFiles.size() - 1);
+                break;
+            } catch (IndexOutOfBoundsException e) {
+                //continue;
+            } catch (Exception e) {
+                logger.error("getLastMappedFile has exception.", e);
+                break;
+            }
+        }
+
+        return mappedFileLast;
     }
 
     public void shutdown(final long intervalForcibly) {
